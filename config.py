@@ -1,8 +1,8 @@
 import os
-import streamlit as st
 from openai import OpenAI
 
-api_key = os.getenv("GROQ_API_KEY") or st.secrets["GROQ_API_KEY"]
+# Get API key from environment
+api_key = os.environ.get("GROQ_API_KEY")
 
 client = OpenAI(
     api_key=api_key,
