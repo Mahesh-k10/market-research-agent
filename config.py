@@ -1,15 +1,12 @@
 import os
-from dotenv import load_dotenv
+import streamlit as st
 from openai import OpenAI
 
-# Load environment variables
-load_dotenv()
+api_key = os.getenv("GROQ_API_KEY") or st.secrets["GROQ_API_KEY"]
 
-# Create Groq client
 client = OpenAI(
-    api_key=os.getenv("GROQ_API_KEY"),
+    api_key=api_key,
     base_url="https://api.groq.com/openai/v1"
 )
 
-# Model to use
-MODEL = "llama-3.3-70b-versatile"
+MODEL = "llama3-70b-8192"
