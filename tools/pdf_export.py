@@ -1,20 +1,32 @@
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+import textwrap
 
-def export_pdf(text, filename="market_research_report.pdf"):
+
+def export_pdf(text):
+    filename = "market_research_report.pdf"
 
     c = canvas.Canvas(filename, pagesize=letter)
     width, height = letter
 
-    y = height - 40
+    x = 50
+    y = height - 50
 
-    for line in text.split("\n"):
-        c.drawString(40, y, line[:100])
-        y -= 15
+    max_chars_per_line = 90  # adjust if needed
 
-        if y < 40:
-            c.showPage()
-            y = height - 40
+    for paragraph in text.split("\n"):
+
+        wrapped_lines = textwrap.wrap(paragraph, max_chars_per_line)
+
+        for line in wrapped_lines:
+            if y < 50:  # new page
+                c.showPage()
+                y = height - 50
+
+            c.drawString(x, y, line)
+            y -= 15
+
+        y -= 10  # space between paragraphs
 
     c.save()
 
