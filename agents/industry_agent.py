@@ -1,4 +1,6 @@
 from config import client, MODEL
+import time
+from openai import RateLimitError
 
 def industry_research(topic):
 
@@ -16,9 +18,24 @@ def industry_research(topic):
     Write in professional research format.
     """
 
-    response = client.chat.completions.create(
-        model=MODEL,
-        messages=[{"role": "user", "content": prompt}]
-    )
+    retries = 3  # number of retry attempts
 
-    return response.choices[0].message.content
+    for attempt in range(retries):
+        try:
+            time.sleep(2)  # prevent rate limit
+
+            response = client.chat.completions.create(
+                model=MODEL,
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            return response.choices[0].message.content
+
+        except RateLimitError:
+            if attempt < retries - 1:
+                time.sleep(5)  # wait before retry
+            else:
+                return "⚠️ Too many requests. Please try again after a minute."
+
+        except Exception as e:
+            return f"❌ Error occurred: {str(e)}"
